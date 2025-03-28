@@ -70,7 +70,116 @@ void Game::printOpenGLVersionInfo() {
 	std::cout << "Vendor: " << glGetString(GL_VENDOR) << '\n';
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << '\n';
 	std::cout << "Version: " << glGetString(GL_VERSION) << '\n';
-	std::cout << "Shading Languag: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << '\n';
+	std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << '\n';
+}
+
+void Game::tutorial() {
+	const char* vertexShaderSource = "#version 330 core\n"
+		"layout (location = 0) in vec3 aPos;\n"
+		"void main()\n"
+		"{\n"
+		"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+		"}\0";
+	const char* fragmentShaderSource = "#version 330 core\n"
+		"out vec4 FragColor;\n"
+		"void main()\n"
+		"{\n"
+		"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+		"}\n\0";
+
+
+	glViewport(0, 0, 640, 480);
+	glEnable(GL_DEPTH_TEST);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+
+
+	// Vertex Shader
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glCompileShader(vertexShader);
+
+	int vertexSuccess;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexSuccess);
+	if (vertexSuccess) {
+		spdlog::info("Vertex Shader Compilation Success");
+	} else {
+		char infoLogVertex[512];
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLogVertex);
+		spdlog::warn(infoLogVertex);
+	}
+
+
+	// Fragment Shader
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glCompileShader(fragmentShader);
+
+	int fragmentSuccess;
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentSuccess);
+	if (fragmentSuccess) {
+		spdlog::info("Fragment Shader Compilation Success");
+	} else {
+		char infoLogFragment[512];
+		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLogFragment);
+		spdlog::warn(infoLogFragment);
+	}
+
+
+	// Shader Program
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+
+	int linkingProgramSuccess;
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &linkingProgramSuccess);
+	if (linkingProgramSuccess) {
+		spdlog::info("Shader Program Compilation Success");
+	} else {
+		char infoLogShaderProgram[512];
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLogShaderProgram);
+		spdlog::warn(infoLogShaderProgram);
+	}
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+
+
+	// Vertices
+	std::vector<GLfloat> vertices = {
+		0.5f,  0.5f, 0.0f,  // Top right
+		0.5f, -0.5f, 0.0f,  // Bottom right
+		-0.5f, -0.5f, 0.0f,  // Bottom left
+		-0.5f,  0.5f, 0.0f	// Top left
+	};
+	
+	std::vector<GLuint> indices = {
+		0, 1, 3,
+		1, 2, 3
+	};
+
+	// VAO
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	// VBO
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+
+	// EBO
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(0);
+	glUseProgram(shaderProgram);
+
 }
 
 
@@ -84,6 +193,8 @@ void Game::initAll() {
 	if (!initOpenGL()) return;
 
 	if (!initializeGladLibrary()) return;
+
+	tutorial();
 
 	running = true;
 }
@@ -100,11 +211,21 @@ void Game::update() {
 
 }
 
-void Game::render() {
+void Game::render() const {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(shaderProgram);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	SDL_GL_SwapWindow(gWindow);
 }
 
 void Game::clean() const {
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteProgram(shaderProgram);
+
 	SDL_DestroyWindow(gWindow);
 	SDL_Quit();
 }

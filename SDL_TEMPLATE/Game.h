@@ -1,5 +1,6 @@
 #pragma once
 #include "SDL.h"
+#include <glad/glad.h>
 
 class Game {
 
@@ -14,6 +15,10 @@ public:
 
 private:
 	SDL_Event gEvent;
+	GLuint VAO;
+	GLuint VBO;
+	GLuint EBO;
+	GLuint shaderProgram;
 
 public:
 	SDL_Window* gWindow;
@@ -30,14 +35,14 @@ private:
 	bool initGWindow();
 	bool initOpenGL();
 	bool initializeGladLibrary();
+	void tutorial();
 
 public:
 	void printOpenGLVersionInfo();
-
 	void initAll();
 	void input();
 	void update();
-	void render();
+	void render() const;
 	void clean() const;
 };
 

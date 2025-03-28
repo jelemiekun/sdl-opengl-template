@@ -7,7 +7,7 @@ int SDL_main(int argc, char* argv[]) {
     game->initAll();
 
     game->printOpenGLVersionInfo();
-
+    
     while (game->running) {
         game->input();
         game->update();
