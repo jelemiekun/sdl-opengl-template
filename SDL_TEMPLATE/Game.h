@@ -19,6 +19,7 @@ private:
 	GLuint VBO;
 	GLuint EBO;
 	GLuint shaderProgram;
+	GLuint indicesCount;
 
 public:
 	SDL_Window* gWindow;
