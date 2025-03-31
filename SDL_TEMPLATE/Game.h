@@ -1,6 +1,9 @@
 #pragma once
 #include "SDL.h"
 #include <glad/glad.h>
+#include <memory>
+
+class Shader;
 
 class Game {
 
@@ -15,12 +18,10 @@ public:
 
 private:
 	SDL_Event gEvent;
-	GLuint vertexShader;
-	GLuint fragmentShader;
-	GLuint shaderProgram;
 	GLuint VAO;
 	GLuint VBO;
 	GLuint EBO;
+	std::unique_ptr<Shader> shader;
 	int indicesCount;
 public:
 	SDL_Window* gWindow;

@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 #include <glad/glad.h>
 #include <iostream>
+#include "Shader.h"
 
 Game::Game() : gWindow(nullptr), gRenderer(nullptr), gOpenGLContext(nullptr) {
 	
@@ -74,77 +75,16 @@ void Game::printOpenGLVersionInfo() {
 }
 
 void Game::tutorial() {
-	const char* vertexShaderSource = "#version 410 core\n"
-		"layout (location = 0) in vec3 aPos;\n"
-		"layout (location = 1) in vec3 aColor;\n"
-		"out vec3 vertexColor;\n"
-		"void main() {\n"
-		"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
-		"	vertexColor = aColor;\n"
-		"}\0"
-		;
-	const char* fragmentShaderSource = "#version 410 core\n"
-		"out vec4 FragColor;\n"
-		"in vec3 vertexColor;\n"
-		"void main(){\n"
-		"	FragColor = vec4(vertexColor, 1.0f);\n"
-		"}\0"
-		;
+	shader = std::make_unique<Shader>("source.shader");
 
 	glViewport(0, 0, 640, 480);
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	int vertexShaderSuccess;
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexShaderSuccess);
-	if (vertexShaderSuccess) {
-		spdlog::info("Vertex Shader compiled successfully.");
-	} else {
-		char log[512];
-		glGetShaderInfoLog(vertexShader, 512, NULL, log);
-		spdlog::warn("Vertex Shader failed to compile: {}", log);
-	}
-
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	int fragmentShaderSuccess;
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentShaderSuccess);
-	if (fragmentShaderSuccess) {
-		spdlog::info("Fragment Shader compiled successfully.");
-	} else {
-		char log[512];
-		glGetShaderInfoLog(fragmentShader, 512, NULL, log);
-		spdlog::warn("Fragment Shader failed to compile: {}", log);
-	}
-
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	int shaderProgramSuccess;
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &shaderProgramSuccess);
-	if (shaderProgramSuccess) {
-		spdlog::info("Shader program linked successfully.");
-	} else {
-		char log[512];
-		glGetProgramInfoLog(shaderProgram, 512, NULL, log);
-		spdlog::warn("Shader program failed to link: {}", log);
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
 	std::vector<GLfloat> vertices = {
 		// h
 		-0.8f, 0.8f, 0.0f, 0.98f, 0.706f, 0.933f,
-		-0.75f, 0.8f, 0.0f, 0.831f, 0.831f, 0.831,
+		-0.75f, 0.8f, 0.0f, 0.831f, 0.831f, 0.831f,
 		-0.8f, 0.4f, 0.0f, 1.0f, 0.373f, 0.894f,
 		-0.75f, 0.4f, 0.0f,0.98f, 0.71f, 0.76f,
 
@@ -244,7 +184,7 @@ void Game::render() const {
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glUseProgram(shaderProgram);
+	shader->use();
 	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
 
 	SDL_GL_SwapWindow(gWindow);
@@ -253,6 +193,12 @@ void Game::render() const {
 }
 
 void Game::clean() const {
+	shader->clean();
+
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+
 	SDL_DestroyWindow(gWindow);
 	SDL_Quit();
 }
