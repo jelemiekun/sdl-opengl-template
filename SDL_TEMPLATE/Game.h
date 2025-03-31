@@ -15,12 +15,13 @@ public:
 
 private:
 	SDL_Event gEvent;
+	GLuint vertexShader;
+	GLuint fragmentShader;
+	GLuint shaderProgram;
 	GLuint VAO;
 	GLuint VBO;
 	GLuint EBO;
-	GLuint shaderProgram;
-	GLuint indicesCount;
-
+	int indicesCount;
 public:
 	SDL_Window* gWindow;
 	SDL_Renderer* gRenderer;

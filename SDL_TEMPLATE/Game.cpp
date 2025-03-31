@@ -33,7 +33,7 @@ bool Game::initSDLSubSystems() {
 }
 
 bool Game::initGWindow() {
-	gWindow = SDL_CreateWindow("RECAP", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_OPENGL);
+	gWindow = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_OPENGL);
 
 	if (gWindow) {
 		spdlog::info("SDL Window created successfully.");
@@ -74,72 +74,63 @@ void Game::printOpenGLVersionInfo() {
 }
 
 void Game::tutorial() {
-	const char* vertexShaderSource = "#version 330 core\n"
+	const char* vertexShaderSource = "#version 410 core\n"
 		"layout (location = 0) in vec3 aPos;\n"
 		"layout (location = 1) in vec3 aColor;\n"
-		"out vec2 firstTwoColor;\n"
-		"out vec4 triColor;\n"
 		"out vec3 vertexColor;\n"
-		"void main()\n"
-		"{\n"
-		"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-		"	firstTwoColor = vec2(0.0f, 0.9f);\n"
-		"	triColor = vec4(firstTwoColor.x, firstTwoColor.y, 1.0f, 0.0f);\n"
+		"void main() {\n"
+		"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
 		"	vertexColor = aColor;\n"
-		"}\0";
-	const char* fragmentShaderSource = "#version 330 core\n"
-		"in vec4 triColor;\n"
-		"in vec3 vertexColor;\n"
+		"}\0"
+		;
+	const char* fragmentShaderSource = "#version 410 core\n"
 		"out vec4 FragColor;\n"
-		"uniform vec4 timeColor;\n"
-		"void main()\n"
-		"{\n"
-		"   FragColor = vec4(vertexColor, timeColor.w);\n"
-		"}\n\0";
+		"in vec3 vertexColor;\n"
+		"void main(){\n"
+		"	FragColor = vec4(vertexColor, 1.0f);\n"
+		"}\0"
+		;
 
 	glViewport(0, 0, 640, 480);
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// Vertex shader
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 
-	GLint vertexSuccess;
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexSuccess);
-	if (vertexSuccess) {
-		spdlog::info("Vertex shader successfully compiled.");
+	int vertexShaderSuccess;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexShaderSuccess);
+	if (vertexShaderSuccess) {
+		spdlog::info("Vertex Shader compiled successfully.");
 	} else {
 		char log[512];
 		glGetShaderInfoLog(vertexShader, 512, NULL, log);
-		spdlog::warn("Vertex shader failed to compile: {}", log);
+		spdlog::warn("Vertex Shader failed to compile: {}", log);
 	}
 
-	// Fragment shader
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 
-	GLint fragmentSuccess;
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentSuccess);
-	if (fragmentSuccess) {
-		spdlog::info("Fragment shader successfully compiled.");
+	int fragmentShaderSuccess;
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentShaderSuccess);
+	if (fragmentShaderSuccess) {
+		spdlog::info("Fragment Shader compiled successfully.");
 	} else {
 		char log[512];
 		glGetShaderInfoLog(fragmentShader, 512, NULL, log);
-		spdlog::warn("Fragment shader failed to compile: {}", log);
+		spdlog::warn("Fragment Shader failed to compile: {}", log);
 	}
 
-	// Shader programm
 	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
 
-	GLint linkingSuccess;
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &linkingSuccess);
-	if (linkingSuccess) {
+	int shaderProgramSuccess;
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &shaderProgramSuccess);
+	if (shaderProgramSuccess) {
 		spdlog::info("Shader program linked successfully.");
 	} else {
 		char log[512];
@@ -150,32 +141,61 @@ void Game::tutorial() {
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	// Vertices
 	std::vector<GLfloat> vertices = {
-		0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-		0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-		-0.5f, -0.0f, 0.0f, 0.4f, 0.2f, 0.9f
+		// h
+		-0.8f, 0.8f, 0.0f, 0.98f, 0.706f, 0.933f,
+		-0.75f, 0.8f, 0.0f, 0.831f, 0.831f, 0.831,
+		-0.8f, 0.4f, 0.0f, 1.0f, 0.373f, 0.894f,
+		-0.75f, 0.4f, 0.0f,0.98f, 0.71f, 0.76f,
+
+		-0.75f, 0.65f, 0.0f,1.00f, 0.41f, 0.71f,
+		-0.6f, 0.65f, 0.0f,1.00f, 0.08f, 0.58f,
+		-0.75f, 0.6f, 0.0f,1.00f, 0.62f, 0.67f,
+		-0.6f, 0.6f, 0.0f,1.00f, 0.76f, 0.80f,
+
+		-0.6f, 0.8f, 0.0f,1.00f, 0.00f, 0.50f,
+		-0.55f, 0.8f, 0.0f,1.00f, 0.57f, 0.64f,
+		-0.6f, 0.4f, 0.0f,1.00f, 0.00f, 1.00f,
+		-0.55f, 0.4f, 0.0f,1.00f, 0.00f, 0.64f,
+
+		// i
+		-0.45f, 0.75f, 0.0f,0.97f, 0.51f, 0.47f,
+		-0.4f, 0.75f, 0.0f,0.88f, 0.69f, 1.00f,
+		-0.45f, 0.65f, 0.0f,0.85f, 0.44f, 0.89f,
+		-0.4f, 0.65f, 0.0f,1.00f, 0.82f, 0.86f,
+
+		-0.45f, 0.6f, 0.0f,1.00f, 0.65f, 0.79f,
+		-0.4f, 0.6f, 0.0f,1.00f, 0.00f, 0.64f,
+		-0.45f, 0.4f, 0.0f,1.00f, 0.08f, 0.58f,
+		-0.4f, 0.4f, 0.0f,1.00f, 0.72f, 0.77f
 	};
 
 	std::vector<GLuint> indices = {
-		0, 1, 2, 
-		0, 1, 3
+		0, 1, 2,
+		1, 2, 3,
+
+		4, 5, 6,
+		5, 6, 7,
+
+		8, 9, 10,
+		9, 10, 11,
+
+		12, 13, 14,
+		13, 14, 15,
+
+		16, 17, 18,
+		17, 18, 19,
 	};
 
 	indicesCount = indices.size();
 
-	// VAO
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
-	// VBO
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
 
-
-	// EBO
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
@@ -220,30 +240,19 @@ void Game::update() {
 
 void Game::render() const {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	glBindVertexArray(VAO); // Use the VAO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // Use the EBO
-	glUseProgram(shaderProgram); // Use the shader program
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glUseProgram(shaderProgram);
+	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
 
-	Uint32 timeValue = SDL_GetTicks();
-	float blueValue = (sin(timeValue / 2.0f) + 0.5f);
-	int vertexColorLocation = glGetUniformLocation(shaderProgram, "timeColor");
-	glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
-
-	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);  // Draw shape
-	
 	SDL_GL_SwapWindow(gWindow);
 
 	SDL_Delay(500);
 }
 
 void Game::clean() const {
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-	glDeleteProgram(shaderProgram);
-
 	SDL_DestroyWindow(gWindow);
 	SDL_Quit();
 }
