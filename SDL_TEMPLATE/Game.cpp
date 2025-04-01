@@ -3,10 +3,14 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "Shader.h"
+#include "ImGuiWindow.h"
+#include "imgui/backends/imgui_impl_sdl2.h"
 
 Game::Game() : gWindow(nullptr), gRenderer(nullptr), gOpenGLContext(nullptr) {
 	
 }
+
+
 
 Game* Game::getInstance() {
 	static Game instance;
@@ -163,11 +167,16 @@ void Game::initAll() {
 
 	tutorial();
 
+	ImGuiWindowContext = ImGuiWindow::getInstance();
+	ImGuiWindowContext->init(gWindow, &gOpenGLContext);
+
 	running = true;
 }
 
 void Game::input() {
 	while (SDL_PollEvent(&gEvent)) {
+		ImGui_ImplSDL2_ProcessEvent(&gEvent);
+
 		if (gEvent.type == SDL_QUIT) {
 			running = false;
 		}
@@ -175,10 +184,9 @@ void Game::input() {
 }
 
 void Game::update() {
-
 }
 
-void Game::render() const {
+void Game::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -187,13 +195,15 @@ void Game::render() const {
 	shader->use();
 	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
 
+	ImGuiWindowContext->render();
 	SDL_GL_SwapWindow(gWindow);
 
-	SDL_Delay(500);
+	SDL_Delay(1);
 }
 
 void Game::clean() const {
 	shader->clean();
+	ImGuiWindowContext->clean();
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);

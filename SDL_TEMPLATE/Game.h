@@ -4,6 +4,7 @@
 #include <memory>
 
 class Shader;
+class ImGuiWindow;
 
 class Game {
 
@@ -22,6 +23,7 @@ private:
 	GLuint VBO;
 	GLuint EBO;
 	std::unique_ptr<Shader> shader;
+	ImGuiWindow* ImGuiWindowContext;
 	int indicesCount;
 public:
 	SDL_Window* gWindow;
@@ -45,7 +47,7 @@ public:
 	void initAll();
 	void input();
 	void update();
-	void render() const;
+	void render();
 	void clean() const;
 };
 
