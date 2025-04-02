@@ -136,6 +136,10 @@ void Shader::setInt(const std::string& name, int value) {
 	glUniform1i(getUniformLocation(name), value);
 }
 
-void Shader::setFloat(const std::string& name, float  value) {
-	glUniform1f(getUniformLocation(name), value);
+void Shader::setFloat(const std::string& name, float v0, float v1, float v2) {
+	glUniform3f(getUniformLocation(name), v0, v1, v2);
+}
+
+void Shader::clean() const {
+	glDeleteProgram(ID);
 }

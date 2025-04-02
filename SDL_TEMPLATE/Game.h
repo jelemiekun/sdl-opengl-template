@@ -7,6 +7,7 @@ class Window;
 class Shader;
 class VertexBuffer;
 class ElementBuffer;
+class ImGuiGamePanel;
 
 class Game {
 private:
@@ -27,6 +28,7 @@ private:
     std::unique_ptr<Shader> gShader;
     std::unique_ptr<VertexBuffer> vertexBuffer;
     std::unique_ptr<ElementBuffer> elementBuffer;
+    std::unique_ptr<ImGuiGamePanel> imGuiGamePanel;
     GLuint VAO;
     SDL_Event gEvent;
 
