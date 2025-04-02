@@ -1,9 +1,9 @@
 #include <SDL.h>
 #include <glad/glad.h>
 #include "ImGuiWindow.h"
-#include "imgui.h"
-#include "imgui/backends/imgui_impl_opengl3.h"
-#include "imgui/backends/imgui_impl_sdl2.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_sdl2.h"
 
 
 ImGuiWindow::ImGuiWindow() {}

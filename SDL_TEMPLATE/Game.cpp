@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Shader.h"
 #include "ImGuiWindow.h"
-#include "imgui/backends/imgui_impl_sdl2.h"
+#include "imgui/imgui_impl_sdl2.h"
 
 Game::Game() : gWindow(nullptr), gRenderer(nullptr), gOpenGLContext(nullptr) {
 	
