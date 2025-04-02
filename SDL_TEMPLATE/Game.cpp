@@ -4,6 +4,7 @@
 #include "Window.h"
 #include "spdlog/spdlog.h"
 #include "Shader.h"
+#include "Keys.h"
 
 Game::Game() : running(false), gWindow(nullptr), glContext(nullptr), gShader(nullptr) {}
 
@@ -87,8 +88,11 @@ void Game::init() {
 }
 
 void Game::input() {
+    static Keys* keys = Keys::getInstance();
+
     while (SDL_PollEvent(&gEvent)) {
         gWindow.get()->handleEvent(gEvent);
+        keys->handleInput(gEvent);
     }
 }
 
