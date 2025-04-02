@@ -5,8 +5,11 @@
 #include "spdlog/spdlog.h"
 #include "Shader.h"
 #include "Keys.h"
+#include "ElementBuffer.h"
+#include "VertexBuffer.h"
 
-Game::Game() : running(false), gWindow(nullptr), glContext(nullptr), gShader(nullptr) {}
+Game::Game() : running(false), gWindow(nullptr), glContext(nullptr), 
+    gShader(nullptr), vertexBuffer(nullptr), elementBuffer(nullptr) {}
 
 Game* Game::getInstance() {
     static Game instance;
@@ -70,8 +73,39 @@ bool Game::initGlad() {
     }
 }
 
+void Game::genVertexArrayObject() {
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+}
+
 void Game::setupShader() {
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
     gShader = std::make_unique<Shader>("source.shader");
+
+    std::vector<GLfloat> vertices = {
+        -0.1f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        -0.1f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+         0.1f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+         0.1f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f
+    };
+
+    std::vector<unsigned int> indices = {
+        0, 1, 2,
+        1, 2, 3
+    };
+
+    vertexBuffer = std::make_unique<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GLfloat));
+    elementBuffer = std::make_unique<ElementBuffer>(indices.data(), indices.size() * sizeof(unsigned int));
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
 }
 
 void Game::init() {
@@ -84,6 +118,7 @@ void Game::init() {
         running = true;
     }
 
+    genVertexArrayObject();
     setupShader();
 }
 
@@ -97,11 +132,19 @@ void Game::input() {
 }
 
 void Game::update() {
-
+    glViewport(0, 0, gWindow.get()->getWidth(), gWindow.get()->getHeight());
 }
 
 void Game::render() {
-    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glBindVertexArray(VAO);
+    gShader.get()->bind();
+
+    glDrawElements(GL_TRIANGLES, elementBuffer.get()->getCount(), GL_UNSIGNED_INT, 0);
+
+    SDL_GL_SwapWindow(gWindow.get()->getWindow());
 }
 
 void Game::quit() {

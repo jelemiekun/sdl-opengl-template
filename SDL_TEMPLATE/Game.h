@@ -1,9 +1,12 @@
 #pragma once
 #include <SDL.h>
 #include <memory>
+#include <glad/glad.h>
 
 class Window;
 class Shader;
+class VertexBuffer;
+class ElementBuffer;
 
 class Game {
 private:
@@ -22,6 +25,9 @@ private:
     std::unique_ptr<Window> gWindow;
     SDL_GLContext glContext;
     std::unique_ptr<Shader> gShader;
+    std::unique_ptr<VertexBuffer> vertexBuffer;
+    std::unique_ptr<ElementBuffer> elementBuffer;
+    GLuint VAO;
     SDL_Event gEvent;
 
 private:
@@ -30,6 +36,7 @@ private:
     void setOpenGLAttributes();
     bool initOpenGL();
     bool initGlad();
+    void genVertexArrayObject();
     void setupShader();
 
 public:

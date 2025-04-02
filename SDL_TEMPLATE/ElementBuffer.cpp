@@ -20,7 +20,3 @@ void ElementBuffer::bind() const {
 void ElementBuffer::unbind() const {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-
-inline unsigned int ElementBuffer::getCount() const {
-	return count;
-}
