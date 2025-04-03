@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "ImGuiWindow.h"
 #include "imgui/imgui_impl_sdl2.h"
+#include "stb_image.h"
+#include "Texture.h"
 
 Game::Game() : gWindow(nullptr), gRenderer(nullptr), gOpenGLContext(nullptr) {
 	
@@ -86,49 +88,16 @@ void Game::tutorial() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	std::vector<GLfloat> vertices = {
-		// h
-		-0.8f, 0.8f, 0.0f, 0.98f, 0.706f, 0.933f,
-		-0.75f, 0.8f, 0.0f, 0.831f, 0.831f, 0.831f,
-		-0.8f, 0.4f, 0.0f, 1.0f, 0.373f, 0.894f,
-		-0.75f, 0.4f, 0.0f,0.98f, 0.71f, 0.76f,
-
-		-0.75f, 0.65f, 0.0f,1.00f, 0.41f, 0.71f,
-		-0.6f, 0.65f, 0.0f,1.00f, 0.08f, 0.58f,
-		-0.75f, 0.6f, 0.0f,1.00f, 0.62f, 0.67f,
-		-0.6f, 0.6f, 0.0f,1.00f, 0.76f, 0.80f,
-
-		-0.6f, 0.8f, 0.0f,1.00f, 0.00f, 0.50f,
-		-0.55f, 0.8f, 0.0f,1.00f, 0.57f, 0.64f,
-		-0.6f, 0.4f, 0.0f,1.00f, 0.00f, 1.00f,
-		-0.55f, 0.4f, 0.0f,1.00f, 0.00f, 0.64f,
-
-		// i
-		-0.45f, 0.75f, 0.0f,0.97f, 0.51f, 0.47f,
-		-0.4f, 0.75f, 0.0f,0.88f, 0.69f, 1.00f,
-		-0.45f, 0.65f, 0.0f,0.85f, 0.44f, 0.89f,
-		-0.4f, 0.65f, 0.0f,1.00f, 0.82f, 0.86f,
-
-		-0.45f, 0.6f, 0.0f,1.00f, 0.65f, 0.79f,
-		-0.4f, 0.6f, 0.0f,1.00f, 0.00f, 0.64f,
-		-0.45f, 0.4f, 0.0f,1.00f, 0.08f, 0.58f,
-		-0.4f, 0.4f, 0.0f,1.00f, 0.72f, 0.77f
+		// position         // color				// texture coords
+		-0.5f,  0.5f, 0.0f, 0.98f,  0.706f, 0.933f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f, 0.831f, 0.831f, 0.831f, 0.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f, 1.0f,   0.373f, 0.894f, 1.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f, 0.98f,  0.71f,  0.76f,  1.0f, 0.0f
 	};
 
 	std::vector<GLuint> indices = {
 		0, 1, 2,
 		1, 2, 3,
-
-		4, 5, 6,
-		5, 6, 7,
-
-		8, 9, 10,
-		9, 10, 11,
-
-		12, 13, 14,
-		13, 14, 15,
-
-		16, 17, 18,
-		17, 18, 19,
 	};
 
 	indicesCount = indices.size();
@@ -144,11 +113,19 @@ void Game::tutorial() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
+	// position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+	// color
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+
+	// texture coord
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
+
+	texture = std::make_unique<Texture>("assets/img/container.jpg");
 
 	glBindVertexArray(0);
 }
@@ -189,6 +166,8 @@ void Game::update() {
 void Game::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	texture->bind();
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

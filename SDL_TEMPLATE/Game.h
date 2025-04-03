@@ -5,6 +5,7 @@
 
 class Shader;
 class ImGuiWindow;
+class Texture;
 
 class Game {
 
@@ -25,6 +26,7 @@ private:
 	std::unique_ptr<Shader> shader;
 	ImGuiWindow* ImGuiWindowContext;
 	int indicesCount;
+	std::unique_ptr<Texture> texture;
 public:
 	SDL_Window* gWindow;
 	SDL_Renderer* gRenderer;
