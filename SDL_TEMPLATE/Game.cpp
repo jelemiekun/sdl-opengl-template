@@ -9,9 +9,11 @@
 #include "VertexBuffer.h"
 #include "imgui/imgui_impl_sdl2.h"
 #include "ImGuiGamePanel.h"
+#include "ObjectInfo.h"
 
 Game::Game() : running(false), gWindow(nullptr), glContext(nullptr), 
-    gShader(nullptr), vertexBuffer(nullptr), elementBuffer(nullptr),
+    gShader1(nullptr), vertexBuffer1(nullptr), elementBuffer1(nullptr),
+    gShader2(nullptr), vertexBuffer2(nullptr), elementBuffer2(nullptr),
     imGuiGamePanel(nullptr) {}
 
 Game* Game::getInstance() {
@@ -77,36 +79,63 @@ bool Game::initGlad() {
 }
 
 void Game::genVertexArrayObject() {
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    glGenVertexArrays(1, &VAO1);
+    glGenVertexArrays(1, &VAO2);
 }
 
 void Game::setupShader() {
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    gShader = std::make_unique<Shader>("source.shader");
+    glBindVertexArray(VAO1);
+    gShader1 = std::make_unique<Shader>("source1.shader");
 
-    std::vector<GLfloat> vertices = {
-        -0.1f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.1f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-         0.1f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-         0.1f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f
+    std::vector<GLfloat> vertices1 = {
+        ObjectInfo::xPos, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        ObjectInfo::xPos, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        ObjectInfo::xPos + 0.2f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        ObjectInfo::xPos + 0.2f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f
     };
 
-    std::vector<unsigned int> indices = {
+    std::vector<unsigned int> indices1 = {
         0, 1, 2,
         1, 2, 3
     };
 
-    vertexBuffer = std::make_unique<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GLfloat));
-    elementBuffer = std::make_unique<ElementBuffer>(indices.data(), indices.size() * sizeof(unsigned int));
+    vertexBuffer1 = std::make_unique<VertexBuffer>(vertices1.data(), vertices1.size() * sizeof(GLfloat));
+    elementBuffer1 = std::make_unique<ElementBuffer>(indices1.data(), indices1.size() * sizeof(unsigned int));
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
+
+    glBindVertexArray(VAO2);
+    gShader2 = std::make_unique<Shader>("source2.shader");
+
+    std::vector<GLfloat> vertices2 = {
+        -1.0f, 1.0f, 0.0f, ObjectInfo::bgR, ObjectInfo::bgG, ObjectInfo::bgB,
+        -1.0f, -1.0f, 0.0f, ObjectInfo::bgR, ObjectInfo::bgG, ObjectInfo::bgB,
+        1.0f, 1.0f, 0.0f, ObjectInfo::bgR, ObjectInfo::bgG, ObjectInfo::bgB,
+        1.0f, -1.0f, 0.0f, ObjectInfo::bgR, ObjectInfo::bgG, ObjectInfo::bgB
+    };
+
+    std::vector<unsigned int> indices2 = {
+        0, 1, 2,
+        1, 2, 3
+    };
+
+    vertexBuffer2 = std::make_unique<VertexBuffer>(vertices2.data(), vertices2.size() * sizeof(GLfloat));
+    elementBuffer2 = std::make_unique<ElementBuffer>(indices2.data(), indices2.size() * sizeof(unsigned int));
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(3);
 
     glBindVertexArray(0);
 }
@@ -141,10 +170,22 @@ void Game::input() {
 void Game::update() {
     glViewport(0, 0, gWindow.get()->getWidth(), gWindow.get()->getHeight());
 
+    gShader1.get()->bind();
+    glBindVertexArray(VAO1);
+
     Uint32 degrees = (SDL_GetTicks() + 360) % 360;
     float radians = degrees * (M_PI / 180.0f);
     float newValue = cos(radians);
-    gShader->setFloat("dynamicColor", newValue, newValue - 0.07f, newValue - 0.03f);
+    gShader1->set3F("dynamicColor", newValue, newValue - 0.07f, newValue - 0.03f);
+
+    gShader1->set3F("positionOffset", ObjectInfo::xPos, 0.0f, 0.0f);
+
+    gShader2.get()->bind();
+    glBindVertexArray(VAO2);
+
+    gShader2->set4F("dynamicColor", ObjectInfo::bgR, ObjectInfo::bgG, ObjectInfo::bgB, ObjectInfo::bgA);
+
+    spdlog::info("RGBA: {}, {}, {}, {}", ObjectInfo::bgR, ObjectInfo::bgG, ObjectInfo::bgB, ObjectInfo::bgA);
 }
 
 void Game::render() {
@@ -152,10 +193,15 @@ void Game::render() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    glBindVertexArray(VAO);
-    gShader.get()->bind();
+    glBindVertexArray(VAO1);
+    gShader1.get()->bind();
 
-    glDrawElements(GL_TRIANGLES, elementBuffer.get()->getCount(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, elementBuffer1.get()->getCount(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(VAO2);
+    gShader2.get()->bind();
+
+    glDrawElements(GL_TRIANGLES, elementBuffer2.get()->getCount(), GL_UNSIGNED_INT, 0);
 
     imGuiGamePanel->render();
     SDL_GL_SwapWindow(gWindow.get()->getWindow());

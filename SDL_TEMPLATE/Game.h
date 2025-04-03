@@ -25,11 +25,15 @@ private:
     bool running;
     std::unique_ptr<Window> gWindow;
     SDL_GLContext glContext;
-    std::unique_ptr<Shader> gShader;
-    std::unique_ptr<VertexBuffer> vertexBuffer;
-    std::unique_ptr<ElementBuffer> elementBuffer;
+    std::unique_ptr<Shader> gShader1;
+    std::unique_ptr<VertexBuffer> vertexBuffer1;
+    std::unique_ptr<ElementBuffer> elementBuffer1;
+    GLuint VAO1;
+    std::unique_ptr<Shader> gShader2;
+    std::unique_ptr<VertexBuffer> vertexBuffer2;
+    std::unique_ptr<ElementBuffer> elementBuffer2;
+    GLuint VAO2;
     std::unique_ptr<ImGuiGamePanel> imGuiGamePanel;
-    GLuint VAO;
     SDL_Event gEvent;
 
 private:

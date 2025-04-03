@@ -32,6 +32,7 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="Keys.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjectInfo.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -39,7 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
-    <None Include="source.shader" />
+    <None Include="source1.shader" />
+    <None Include="source2.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ElementBuffer.h" />
@@ -55,6 +57,7 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="Keys.h" />
+    <ClInclude Include="ObjectInfo.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="VertexBuffer.h" />

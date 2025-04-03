@@ -33,6 +33,7 @@ public:
 	void unbind() const;
 	void setBool(const std::string& name, bool value);
 	void setInt(const std::string& name, int value);
-	void setFloat(const std::string& name, float v0, float v1, float v2);
+	void set3F(const std::string& name, float v0, float v1, float v2);
+	void set4F(const std::string& name, float v0, float v1, float v2, float v3);
 	void clean() const;
 };

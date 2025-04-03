@@ -63,12 +63,24 @@
     <ClCompile Include="ElementBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ImGuiGamePanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Keys.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="source.shader">
+    <None Include="source1.shader">
+      <Filter>Resource Files\Shader</Filter>
+    </None>
+    <None Include="source2.shader">
       <Filter>Resource Files\Shader</Filter>
     </None>
   </ItemGroup>
@@ -116,6 +128,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ElementBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiGamePanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Keys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

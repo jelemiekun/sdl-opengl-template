@@ -4,6 +4,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_sdl2.h"
 #include "SDL.h"
+#include "ObjectInfo.h"
 
 ImGuiGamePanel* ImGuiGamePanel::getInstance() {
     static ImGuiGamePanel instance;
@@ -47,9 +48,8 @@ void ImGuiGamePanel::render() {
 
     ImGui::Begin("Debug Window");
 
-    static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+    static ImVec4 color = ImVec4(ObjectInfo::bgR, ObjectInfo::bgG, ObjectInfo::bgB, ObjectInfo::bgA);
     static ImGuiColorEditFlags base_flags = ImGuiColorEditFlags_None;
-    ImGui::SeparatorText("Backgroundd Color Picker:");
     ImGui::SeparatorText("Color picker");
 
     static bool ref_color = false;
@@ -81,7 +81,12 @@ void ImGuiGamePanel::render() {
     if (display_mode == 2) flags_1 |= ImGuiColorEditFlags_DisplayRGB;     // Override display mode
     if (display_mode == 3) flags_1 |= ImGuiColorEditFlags_DisplayHSV;
     if (display_mode == 4) flags_1 |= ImGuiColorEditFlags_DisplayHex;
-    ImGui::ColorPicker4("MyColor##4", (float*)&color, flags_1, ref_color ? &ref_color_v.x : NULL);
+    ImGui::ColorPicker4("MyColor##4", (float*)&color, flags_1);
+
+    ObjectInfo::bgR = color.x;
+    ObjectInfo::bgG = color.y;
+    ObjectInfo::bgB = color.z;
+    ObjectInfo::bgA = color.w;
 
     ImGui::Text("Set defaults in code:");
     if (ImGui::Button("Default: Uint8 + HSV + Hue Bar"))
@@ -91,10 +96,8 @@ void ImGuiGamePanel::render() {
 
 
     ImGui::SeparatorText("X Position:");
-    static float slider_f_own;
     static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
-    const ImGuiSliderFlags flags_for_sliders = flags & ~ImGuiSliderFlags_WrapAround;
-    ImGui::SliderFloat("SliderFloat (0 -> 1)", &slider_f_own, 0.0f, 1.0f, "%.3f", flags_for_sliders);
+    ImGui::SliderFloat("SliderFloat (-1 -> 1)", &ObjectInfo::xPos, -1.0f, 1.0f, "%.3f");
 
     ImGui::SeparatorText("Mouse Events:");
     ImGuiIO& io = ImGui::GetIO();

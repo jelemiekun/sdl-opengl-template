@@ -14,5 +14,7 @@ int SDL_main(int argc, char* argv[]) {
 
     game->clean();
 
+    exit(0);
+
     return 0;
 }
