@@ -32,6 +32,7 @@ add existing item on corresponding filter
 initializer: https://github.com/jelemiekun/sdl-opengl-prac/blob/master/SDL_TEMPLATE/ImGuiWindow.cpp
 call imguiinit on your initializer and
 call imguiwindow::render on your render function
+call imguiwindow::clean on your clean function
 
 forward SDL events to imgui inside while(SDL_PollEvent): 
 ImGui_ImplSDL2_ProcessEvent(&event);
