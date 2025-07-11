@@ -37,8 +37,8 @@ forward SDL events to imgui inside while(SDL_PollEvent):
 ImGui_ImplSDL2_ProcessEvent(&event);
 
 /========/
-run imgui's main.cpp
-find what widgets you would like to use
-find and go to imgui_demo.cpp
-search the widget title
-copy and paste it inside your render function
+put ImGui::ShowemoWindow() inside your render function
+find the widget you would like to use
+find and open imgui_demo.cpp inside your project's filter
+search the widget's title you would like to use
+copy and paste
