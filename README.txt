@@ -11,3 +11,27 @@ copy imgui from pc/laptop to project directory (Project -> Add an existing item)
 install EditorConfig Guidelines by Ivan.Z
 
 rename output name exe by Project Properties -> Configuration Properties -> General -> Target Name (Example.exe)
+
+/=======================================================================================================================/
+imGUI
+
+download imGUI
+https://github.com/ocornut/imgui
+
+create imgui folder in your project
+copy *.h and *.cpp files on the imgui/docking/*
+paste it in imgui folder in your project
+go to imgui/docking/backends/
+copy the desired *.h and *.cpp base on your project setup
+paste it also in igui folder in your project
+in your visual studio, project->project properties->c/c++->general->additional include directories
+add imgui
+on solution explorer, add new filter named "imgui" for both header and source files
+add existing item on corresponding filter
+
+initializer: https://github.com/jelemiekun/sdl-opengl-prac/blob/master/SDL_TEMPLATE/ImGuiWindow.cpp
+call imguiinit on your initializer and
+call imguiwindow::render on your render function
+
+forward SDL events to imgui inside while(SDL_PollEvent): 
+ImGui_ImplSDL2_ProcessEvent(&event);
