@@ -35,3 +35,10 @@ call imguiwindow::render on your render function
 
 forward SDL events to imgui inside while(SDL_PollEvent): 
 ImGui_ImplSDL2_ProcessEvent(&event);
+
+/========/
+run imgui's main.cpp
+find what widgets you would like to use
+find and go to imgui_demo.cpp
+search the widget title
+copy and paste it inside your render function
