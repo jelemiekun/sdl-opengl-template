@@ -5,7 +5,9 @@ separate assets by music, fx, and img.
 
 copy sdl2 from cloud to C:\SDL2 (create own SDL2 folder in C:)
 copy spdlog from cloud to C:\spdlog (create own spdlog folder in C:)
-copy glm from cloud to your project's files (include all including subdirectories in your project)
+copy glm from cloud to your C:\glmm (create own glm folder in C:)
+
+add all in project solution -> properties -> c/c++ -> additional include libraries
 
 copy imgui from pc/laptop to project directory (Project -> Add an existing item)
 
