@@ -47,3 +47,7 @@ find the widget you would like to use
 find and open imgui_demo.cpp inside your project's filter
 search the widget's title you would like to use
 copy and paste
+
+
+/========================================/
+Inno setup for deployment
