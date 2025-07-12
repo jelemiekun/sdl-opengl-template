@@ -8,6 +8,7 @@ copy spdlog from cloud to C:\spdlog (create own spdlog folder in C:)
 copy glm from cloud to your C:\glmm (create own glm folder in C:)
 
 add all in project solution -> properties -> c/c++ -> additional include libraries
+(copy paste all folder inside the project folder for publshing the app, just configure the additional include and linking)
 
 copy imgui from pc/laptop to project directory (Project -> Add an existing item)
 
