@@ -3,8 +3,9 @@ delete .git then git init again to initialize new timeline of git
 create assets folder inside SDL_TEMPLATE and put assets there.
 separate assets by music, fx, and img.
 
-copy sdl2 from pc/laptop to C:\SDL2 (create own SDL2 folder in C:)
-copy spdlog from pc/laptop to C:\spdlog (create own spdlog folder in C:)
+copy sdl2 from cloud to C:\SDL2 (create own SDL2 folder in C:)
+copy spdlog from cloud to C:\spdlog (create own spdlog folder in C:)
+copy glm from cloud to your project's files
 
 copy imgui from pc/laptop to project directory (Project -> Add an existing item)
 
