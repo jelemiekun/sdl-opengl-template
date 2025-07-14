@@ -34,7 +34,7 @@ add imgui
 on solution explorer, add new filter named "imgui" for both header and source files
 add existing item on corresponding filter
 
-initializer: https://github.com/jelemiekun/sdl-opengl-prac/blob/master/SDL_TEMPLATE/ImGuiWindow.cpp
+initializer: https://github.com/jelemiekun/sdl-opengl-prac/blob/master/SDL_TEMPLATE/ImGUIWindow.cpp
 call imguiinit on your initializer and
 call imguiwindow::render on your render function
 call imguiwindow::clean on your clean function
