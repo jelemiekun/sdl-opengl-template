@@ -1,19 +1,19 @@
-delete .git then git init again to initialize new timeline of git
+Delete .git, then git init again to initialize a new timeline of git.
 
-create assets folder inside SDL_TEMPLATE and put assets there.
-separate assets by music, fx, and img.
+Create an assets folder inside SDL_TEMPLATE and put assets there.
+separate assets by music, fx, img, models, etc.
 
-copy sdl2 from cloud to C:\SDL2 (create own SDL2 folder in C:)
-copy spdlog from cloud to C:\spdlog (create own spdlog folder in C:)
-copy glm from cloud to your C:\glm (create own glm folder in C:)
-include stb_image -> https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h
+Copy sdl2 from cloud to C:\SDL2 (create own SDL2 folder in C:)
+Copy spdlog from cloud to C:\spdlog (create own spdlog folder in C:)
+Copy glm from cloud to your C:\glm (create own glm folder in C:)
+Include stb_image -> https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h
 
 add all in project solution -> properties -> c/c++ -> additional include libraries
-(copy paste all folder inside the project folder for publshing the app, just configure the additional include and linking)
+(Copy-paste all folders inside the project folder for publishing the app, just configure the additional include and linking)
 
-copy imgui from pc/laptop to project directory (Project -> Add an existing item)
+Copy imgui from pc/laptop to project directory (Project -> Add an existing item)
 
-install EditorConfig Guidelines by Ivan.Z
+Install EditorConfig Guidelines by Ivan.Z
 
 rename output name exe by Project Properties -> Configuration Properties -> General -> Target Name (Example.exe)
 
@@ -23,16 +23,16 @@ imGUI
 download imGUI
 https://github.com/ocornut/imgui
 
-create imgui folder in your project
+Create imgui folder in your project
 copy *.h and *.cpp files on the imgui/docking/*
-paste it in imgui folder in your project
+Paste it in imgui folder in your project
 go to imgui/docking/backends/
 copy the desired *.h and *.cpp base on your project setup
-paste it also in igui folder in your project
+Paste it also in igui folder in your project
 in your visual studio, project->project properties->c/c++->general->additional include directories
 add imgui
-on solution explorer, add new filter named "imgui" for both header and source files
-add existing item on corresponding filter
+In Solution Explorer, add a new filter named "imgui" for both header and source files
+Add "existing item" to the corresponding filter
 
 initializer: https://github.com/jelemiekun/sdl-opengl-prac/blob/master/SDL_TEMPLATE/ImGUIWindow.cpp
 call imguiinit on your initializer and
