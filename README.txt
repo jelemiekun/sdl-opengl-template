@@ -49,6 +49,28 @@ find and open imgui_demo.cpp inside your project's filter
 search the widget's title you would like to use
 copy and paste
 
+/===============/
+Remap keyboard control (opening command prompt)
+1a. Go to Tools > Options > Environment > Keyboard
+1b. Search "View.Terminal" then click "Remove"
+
+2a. Go to Tools > External Tools...
+2b. Click "Add"
+2c. Fill in the fields like this:
+
+Title: Developer CMD
+Command: cmd.exe
+Arguments: /k "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat"
+Initial directory: $(SolutionDir)
+
+!!! Make sure the path to VsDevCmd.bat matches your installed Visual Studio edition (Community, Professional, etc.) !!!
+
+3a. Go to Tools > Options > Environment > Keyboard
+3b. Search "Tools.ExternalCommand"
+3c. Find the command corresponding to the External Tool Number you just added
+3d. Selkect and press Shortcuy keys, then press " Ctrl + ` "
+3e. Click assign
+
 
 /========================================/
 Inno setup for deployment
