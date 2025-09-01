@@ -73,4 +73,11 @@ Initial directory: $(SolutionDir)
 
 
 /========================================/
+Use vcpkg to install bullet physics (AND OTHER LIBRARIES FOR EASY INSTALL)
+
+vcpkg install bullet3:x64-windows
+vcpkg integrate install
+
+
+/========================================/
 Inno setup for deployment
